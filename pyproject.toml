@@ -1,0 +1,18 @@
+[project]
+name = "rag-evidence-trust-console"
+version = "0.0.1"
+description = "An observability and explainability platform for RAG systems"
+authors = [{ name = "Aditya Wanjari" }]
+requires-python = ">=3.10"
+
+dependencies = [
+  "openai>=1.0.0",
+  "faiss-cpu",
+  "numpy",
+  "pyyaml",
+  "python-dotenv",
+  "tqdm"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
