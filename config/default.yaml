@@ -1,0 +1,17 @@
+paths:
+  docs_dir: "docs"
+
+chunking:
+  type: "fixed"
+  chunk_size: 500
+  overlap: 100
+
+retrieval:
+  type: "openai_faiss"
+  top_k: 5
+  embedding_model: "text-embedding-3-small"
+
+llm:
+  provider: "openai"
+  model: "gpt-4o-mini"
+  temperature: 0

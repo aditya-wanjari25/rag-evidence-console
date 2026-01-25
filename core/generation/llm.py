@@ -4,9 +4,10 @@ from openai import OpenAI
 from .base import BaseGenerator
 
 class OpenAIGenerator(BaseGenerator):
-    def __init__(self, model: str = "gpt-4o-mini"):
+    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0 ):
         self.client = OpenAI()
         self.model = model
+        self.temperature = temperature
 
     def generate(self, query: str, context: List[Dict]) -> Dict:
         context_text = "\n\n".join(
@@ -15,20 +16,20 @@ class OpenAIGenerator(BaseGenerator):
         )
 
         prompt = f"""
-Use the context below to answer the question.
-If the answer is not contained in the context, say so clearly.
+        Use the context below to answer the question.
+        If the answer is not contained in the context, say so clearly.
 
-Context:
-{context_text}
+        Context:
+        {context_text}
 
-Question:
-{query}
-"""
+        Question:
+        {query}
+        """
 
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
-            temperature=0
+            temperature= self.temperature
         )
 
         return {
