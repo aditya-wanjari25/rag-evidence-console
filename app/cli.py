@@ -73,18 +73,27 @@ def main():
     pipeline = build_pipeline(cfg)
 
     docs_dir_default = cfg["paths"].get("docs_dir", "docs")
+    reset_parser = subparsers.add_parser("reset")
+    reset_parser.add_argument("--yes", action="store_true", help="Confirm reset")
+
 
     if args.command == "ingest":
         docs_dir = args.path or docs_dir_default
         docs = load_documents(docs_dir)
         pipeline.ingest(docs)
-        print(f"Ingested {len(docs)} document(s) from: {docs_dir}")
+        artifacts_dir = cfg["paths"].get("artifacts_dir", "artifacts")
+        pipeline.retriever.save(artifacts_dir)
+        print(f"Ingested {len(docs)} doc(s). Saved index to: {artifacts_dir}")
+
 
     elif args.command == "query":
         # v0 behavior: build index fresh each run unless we add persistence later
         docs_dir = args.docs or docs_dir_default
         docs = load_documents(docs_dir)
         pipeline.ingest(docs)
+        artifacts_dir = cfg["paths"].get("artifacts_dir", "artifacts")
+        pipeline.retriever.load(artifacts_dir)
+
 
         k = int(cfg["retrieval"].get("top_k", 5))
         retrieved = pipeline.retriever.retrieve(args.question, k=k)
@@ -98,6 +107,18 @@ def main():
 
         print("\n=== Answer ===")
         print(result["answer"])
+
+    elif args.command == "reset":
+        if not args.yes:
+            print("Add --yes to confirm reset.")
+            return
+        import shutil
+        artifacts_dir = cfg["paths"].get("artifacts_dir", "artifacts")
+        if os.path.exists(artifacts_dir):
+            shutil.rmtree(artifacts_dir)
+            print(f"Deleted artifacts directory: {artifacts_dir}")
+        else:
+            print("No artifacts directory found. Nothing to reset.")
 
     else:
         parser.print_help()

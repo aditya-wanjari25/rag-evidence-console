@@ -1,5 +1,6 @@
 paths:
   docs_dir: "docs"
+  artifacts_dir: "artifacts"
 
 chunking:
   type: "fixed"
