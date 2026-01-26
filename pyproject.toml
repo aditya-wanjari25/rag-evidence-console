@@ -11,7 +11,8 @@ dependencies = [
   "numpy",
   "pyyaml",
   "python-dotenv",
-  "tqdm"
+  "tqdm",
+  "streamlit"
 ]
 
 [tool.setuptools.packages.find]
